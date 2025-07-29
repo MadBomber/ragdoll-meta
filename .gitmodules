@@ -1,0 +1,12 @@
+[submodule "ragdoll"]
+	path = ragdoll
+	url = ssh://git@github.com/MadBomber/ragdoll.git
+[submodule "ragdoll-cli"]
+	path = ragdoll-cli
+	url = ssh://git@github.com/MadBomber/ragdoll-cli.git
+[submodule "ragdoll-rails"]
+	path = ragdoll-rails
+	url = ssh://git@github.com/MadBomber/ragdoll-rails.git
+[submodule "ragdoll-docs"]
+	path = ragdoll-docs
+	url = ssh://git@github.com/MadBomber/ragdoll-docs.git
