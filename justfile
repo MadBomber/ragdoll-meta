@@ -38,37 +38,75 @@ sm-list:
     git submodule
 
 # Update VERSION constant in all submodule version.rb files
-@update-versions: sm-update
+update-versions: sm-update
     #!/bin/bash
     set -euo pipefail
-
-    meta="{{ meta }}"
-    echo "DEBUG meta = $meta"
 
     # Read version from .version file
     VERSION=$(cat .version | tr -d '[:space:]')
 
-    echo "Updating all version.rb files to version: $VERSION"
+    echo "Updating all repositories to version: $VERSION"
 
+    # Handle Ruby version files
     for file in "ragdoll/lib/ragdoll/core/version.rb" "ragdoll-cli/lib/ragdoll/cli/version.rb" "ragdoll-rails/lib/ragdoll/rails/version.rb"; do
-        echo "DEBUG file = $file"
-
         if [ -f "$file" ]; then
             repo=$(echo "$file" | cut -d '/' -f 1)
-            echo "DEBUG repo = $repo"
+            relative_file=$(echo "$file" | cut -d '/' -f 2-)
+
+            # Update the version file
             sed -i '' "s/VERSION = \"[^\"]*\"/VERSION = \"$VERSION\"/" "$file"
-            git add "$file"
-            #
-            pushd "$repo"
+
+            # Navigate to submodule and commit changes there
+            pushd "$repo" > /dev/null 2>&1
+            git add "$relative_file" > /dev/null 2>&1
+
+            # Update coss.toml in the submodule
             coss="coss.toml"
-            sed -i '' "s/version = \"[^\"]*\"/version = \"$VERSION\"/" "$coss"
-            git add "$coss"
-            #
-            # git commit -m "Update version to $VERSION"
-            # git push
-            popd
-            echo "✓ Updated $file"
+            if [ -f "$coss" ]; then
+                sed -i '' "s/version = \"[^\"]*\"/version = \"$VERSION\"/" "$coss"
+                git add "$coss" > /dev/null 2>&1
+            fi
+
+            # Commit changes in the submodule
+            if git commit -m "Update version to $VERSION" > /dev/null 2>&1; then
+                echo "✓ $repo updated"
+            else
+                echo "• $repo (no changes)"
+            fi
+
+            popd > /dev/null 2>&1
         fi
     done
 
-    echo "Version update complete!"
+    # Handle ragdoll-docs mkdocs.yml file
+    docs_file="ragdoll-docs/mkdocs.yml"
+
+    if [ -f "$docs_file" ]; then
+        repo="ragdoll-docs"
+        relative_file="mkdocs.yml"
+
+        # Update the version in mkdocs.yml
+        sed -i '' "s/version: [0-9][0-9]*\.[0-9][0-9]*\.[0-9][0-9]*/version: $VERSION/" "$docs_file"
+
+        # Navigate to submodule and commit changes there
+        pushd "$repo" > /dev/null 2>&1
+        git add "$relative_file" > /dev/null 2>&1
+
+        # Update coss.toml in the submodule if it exists
+        coss="coss.toml"
+        if [ -f "$coss" ]; then
+            sed -i '' "s/version = \"[^\"]*\"/version = \"$VERSION\"/" "$coss"
+            git add "$coss" > /dev/null 2>&1
+        fi
+
+        # Commit changes in the submodule
+        if git commit -m "Update version to $VERSION" > /dev/null 2>&1; then
+            echo "✓ $repo updated"
+        else
+            echo "• $repo (no changes)"
+        fi
+
+        popd > /dev/null 2>&1
+    fi
+
+    echo "Done!"
