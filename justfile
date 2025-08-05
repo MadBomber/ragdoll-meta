@@ -53,6 +53,26 @@ build-ragdoll-cli:
 build-ragdoll-rails:
     cd ragdoll-rails && rake build
 
+# Bundle install for all gem submodules
+bundle: bundle-ragdoll bundle-ragdoll-cli bundle-ragdoll-rails bundle-ragdoll-demo
+    echo "All gem dependencies bundled successfully!"
+
+# Bundle install for ragdoll gem
+bundle-ragdoll:
+    cd ragdoll && bundle install
+
+# Bundle install for ragdoll-cli gem
+bundle-ragdoll-cli:
+    cd ragdoll-cli && bundle install
+
+# Bundle install for ragdoll-rails gem
+bundle-ragdoll-rails:
+    cd ragdoll-rails && bundle install
+
+# Bundle install for ragdoll-demo
+bundle-ragdoll-demo:
+    cd ragdoll-demo && bundle install
+
 # Install all gem submodules
 install: install-ragdoll install-ragdoll-cli install-ragdoll-rails
     echo "All gems installed successfully!"
@@ -69,9 +89,9 @@ install-ragdoll-cli:
 install-ragdoll-rails:
     cd ragdoll-rails && rake install
 
-# Build and install all gems
-build-install: build install
-    echo "All gems built and installed!"
+# Bundle, build and install all gems
+build-install: bundle build install
+    echo "All gems bundled, built and installed!"
 
 # Build all gems and start Rails server in ragdoll-demo
 run: build
