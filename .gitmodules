@@ -10,3 +10,6 @@
 [submodule "ragdoll-docs"]
 	path = ragdoll-docs
 	url = ssh://git@github.com/MadBomber/ragdoll-docs.git
+[submodule "ragdoll-demo"]
+	path = ragdoll-demo
+	url = ssh://git@github.com/MadBomber/ragdoll-demo.git

@@ -48,7 +48,7 @@ update-versions: sm-update
     echo "Updating all repositories to version: $VERSION"
 
     # Handle Ruby version files
-    for file in "ragdoll/lib/ragdoll/core/version.rb" "ragdoll-cli/lib/ragdoll/cli/version.rb" "ragdoll-rails/lib/ragdoll/rails/version.rb"; do
+    for file in "ragdoll/lib/ragdoll/core/version.rb" "ragdoll-cli/lib/ragdoll/cli/version.rb" "ragdoll-rails/lib/ragdoll/rails/version.rb" "ragdoll-demo/lib/version.rb"; do
         if [ -f "$file" ]; then
             repo=$(echo "$file" | cut -d '/' -f 1)
             relative_file=$(echo "$file" | cut -d '/' -f 2-)
@@ -60,6 +60,7 @@ update-versions: sm-update
             pushd "$repo" > /dev/null 2>&1
             git add "$relative_file" > /dev/null 2>&1
 
+
             # Update coss.toml in the submodule
             coss="coss.toml"
             if [ -f "$coss" ]; then
@@ -69,6 +70,7 @@ update-versions: sm-update
 
             # Commit changes in the submodule
             if git commit -m "Update version to $VERSION" > /dev/null 2>&1; then
+                git push
                 echo "✓ $repo updated"
             else
                 echo "• $repo (no changes)"
@@ -101,6 +103,7 @@ update-versions: sm-update
 
         # Commit changes in the submodule
         if git commit -m "Update version to $VERSION" > /dev/null 2>&1; then
+            git push
             echo "✓ $repo updated"
         else
             echo "• $repo (no changes)"
@@ -108,5 +111,6 @@ update-versions: sm-update
 
         popd > /dev/null 2>&1
     fi
+
 
     echo "Done!"
