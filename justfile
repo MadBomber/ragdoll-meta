@@ -37,6 +37,55 @@ sm-remove name:
 sm-list:
     git submodule
 
+# Build all gem submodules
+build: build-ragdoll build-ragdoll-cli build-ragdoll-rails
+    echo "All gems built successfully!"
+
+# Build ragdoll gem
+build-ragdoll:
+    cd ragdoll && rake build
+
+# Build ragdoll-cli gem
+build-ragdoll-cli:
+    cd ragdoll-cli && rake build
+
+# Build ragdoll-rails gem
+build-ragdoll-rails:
+    cd ragdoll-rails && rake build
+
+# Install all gem submodules
+install: install-ragdoll install-ragdoll-cli install-ragdoll-rails
+    echo "All gems installed successfully!"
+
+# Install ragdoll gem
+install-ragdoll:
+    cd ragdoll && rake install
+
+# Install ragdoll-cli gem
+install-ragdoll-cli:
+    cd ragdoll-cli && rake install
+
+# Install ragdoll-rails gem
+install-ragdoll-rails:
+    cd ragdoll-rails && rake install
+
+# Build and install all gems
+build-install: build install
+    echo "All gems built and installed!"
+
+# Build all gems and start Rails server in ragdoll-demo
+run: build
+    cd ragdoll-demo && rails server
+
+# Build all gems and start Rails console in ragdoll-demo
+console: build
+    cd ragdoll-demo && rails console
+
+# Aliases
+alias r := run
+alias c := console
+alias bi := build-install
+
 # Update VERSION constant in all submodule version.rb files
 update-versions: sm-update
     #!/bin/bash
