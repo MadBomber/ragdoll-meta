@@ -101,6 +101,19 @@ run: build
 console: build
     cd ragdoll-demo && rails console
 
+# Initialize ragdoll-demo with required setup
+init:
+    echo "Initializing ragdoll-demo application..."
+    echo "Cleaning and installing bundle dependencies..."
+    cd ragdoll-demo && bundle install
+    echo "Ragdoll configuration initializer already created manually"
+    echo "Copying ragdoll migrations..."
+    cp -n ragdoll/db/migrate/*.rb ragdoll-demo/db/migrate/ || true
+    echo "Running database migrations..."
+    cd ragdoll-demo && rails db:migrate
+    echo "Ragdoll-demo initialized successfully!"
+    echo "Note: Ensure PostgreSQL has vector extension: CREATE EXTENSION IF NOT EXISTS vector;"
+
 # Aliases
 alias r := run
 alias c := console
